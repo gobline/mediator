@@ -24,7 +24,7 @@ class FooSubscriber implements EventSubscriberInterface
 
     public function getSubscribedEvents()
     {
-        return ['fooEvent'];
+        return ['fooEvent' => 'onFooEvent'];
     }
 }
 
@@ -49,21 +49,45 @@ class FooListener
 }
 
 $listener = new FooListener();
-$dispatcher->addListener('fooEvent', $listener);
+$dispatcher->addListener($listener, ['fooEvent' => 'onFooEvent']);
 ```
 
-### Adding Closures
+### Lazy Listeners
 
-Adding a closure allows you to lazy load the listener instance.
+You can add a closure which will lazy load the listener instance.
+This allows the listener to be instantiated only when an event it listens to is dispatched.
 
 ```php
-$dispatcher->addListener('fooEvent', function() {
-	return new FooListener();
-});
+$dispatcher->addListener(
+    function() { return new FooListener(); },
+    ['fooEvent' => 'onFooEvent']);
 ```
 
 ### Dispatching Events
 
 ```php
 $dispatcher->dispatch('fooEvent');
+```
+
+## Passing event data
+
+```php
+$dispatcher->dispatch('fooEvent', ['foo' => 'bar']);
+
+class FooListener
+{
+    public function onFooEvent(array $data)
+    {
+        // ... do something with $data['foo']
+    }
+}
+```
+
+## Installation
+
+You can install Mendo Mediator using the dependency management tool [Composer](https://getcomposer.org/).
+Run the *require* command to resolve and download the dependencies:
+
+```
+composer require mendoframework/mediator
 ```

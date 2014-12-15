@@ -23,7 +23,7 @@ class EventDispatcher implements EventDispatcherInterface
      */
     public function addSubscriber(EventSubscriberInterface $subscriber)
     {
-        $this->addListener($subscriber->getSubscribedEvents(), $subscriber);
+        $this->addListener($subscriber, $subscriber->getSubscribedEvents());
 
         return $this;
     }
@@ -31,23 +31,24 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function addListener($events, $listener)
+    public function addListener($listener, array $events)
     {
-        if (!is_array($events)) {
-            $events = [$events];
-        }
-
         if (!is_object($listener)) {
             throw new \InvalidArgumentException('$listener must be an object or closure');
         }
 
-        foreach ($events as $event) {
-            $event = (string) $event;
-            if ($event === '') {
-                throw new \InvalidArgumentException('$event cannot be empty');
+        foreach ($events as $eventName => $eventMethodName) {
+            $eventName = (string) $eventName;
+            if ($eventName === '') {
+                throw new \InvalidArgumentException('$events cannot contain empty event names');
             }
 
-            $this->listeners[$event][] = $listener;
+            $eventMethodName = (string) $eventMethodName;
+            if ($eventMethodName === '') {
+                throw new \InvalidArgumentException('$events cannot contain empty event method names');
+            }
+
+            $this->listeners[$eventName][] = [$listener, $eventMethodName];
         }
 
         return $this;
@@ -56,7 +57,7 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * {@inheritdoc}
      */
-    public function dispatch($event)
+    public function dispatch($event, array $data = [])
     {
         $event = (string) $event;
         if ($event === '') {
@@ -67,24 +68,19 @@ class EventDispatcher implements EventDispatcherInterface
             return;
         }
 
-        $method = $this->getEventMethodName($event);
+        foreach ($this->listeners[$event] as $callback) {
+            list($listener, $methodName) = $callback;
 
-        foreach ($this->listeners[$event] as &$listener) {
             if ($listener instanceof \Closure) {
                 $listener = $listener();
             }
 
-            if (!method_exists($listener, $method)) {
+            if (!method_exists($listener, $methodName)) {
                 throw new \RuntimeException(
-                    'Method '.$method.' doesn\'t exist in the listener class '.get_class($listener));
+                    'Method '.$methodName.' doesn\'t exist in the listener class '.get_class($listener));
             }
 
-            $listener->$method();
+            $listener->$methodName($data);
         }
-    }
-
-    private function getEventMethodName($event)
-    {
-        return 'on'.ucfirst($event);
     }
 }

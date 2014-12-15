@@ -21,12 +21,14 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
     {
         $dispatcher = new EventDispatcher();
 
-        $dispatcher->addListener('fooEvent', new FooListener());
+        $dispatcher->addListener(
+            new FooListener(),
+            [
+                'fooEvent' => 'onFooEvent'
+            ]);
 
         $this->expectOutputString('hello world');
-        $dispatcher->dispatch('fooEvent');
-
-        $this->assertTrue(true);
+        $dispatcher->dispatch('fooEvent', ['qux' => 'corge']);
     }
 
     public function testEventSubscriber()
@@ -36,23 +38,21 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher->addSubscriber(new FooListener());
 
         $this->expectOutputString('hello world');
-        $dispatcher->dispatch('fooEvent');
-
-        $this->assertTrue(true);
+        $dispatcher->dispatch('fooEvent', ['qux' => 'corge']);
     }
 
     public function testClosureListener()
     {
         $dispatcher = new EventDispatcher();
 
-        $dispatcher->addListener('fooEvent', function () {
-            return new FooListener();
-        });
+        $dispatcher->addListener(
+            function () { return new FooListener(); },
+            [
+                'fooEvent' => 'onFooEvent'
+            ]);
 
         $this->expectOutputString('hello world');
-        $dispatcher->dispatch('fooEvent');
-
-        $this->assertTrue(true);
+        $dispatcher->dispatch('fooEvent', ['qux' => 'corge']);
     }
 
     public function testDispatchEmptyEvent()
@@ -65,13 +65,17 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
 
 class FooListener implements EventSubscriberInterface
 {
-    public function onFooEvent()
+    public function onFooEvent(array $data)
     {
+        if (!isset($data['qux'])) {
+            throw new \Exception('Expected qux parameter not found');
+        }
+
         echo 'hello world';
     }
 
     public function getSubscribedEvents()
     {
-        return ['fooEvent'];
+        return ['fooEvent' => 'onFooEvent'];
     }
 }
