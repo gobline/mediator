@@ -41,6 +41,7 @@ interface EventDispatcherInterface
      * @param string $event
      *
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function dispatch($event);
 }
