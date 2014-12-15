@@ -17,11 +17,37 @@ use Mendo\Mediator\EventSubscriberInterface;
  */
 class EventDispatcherTest extends PHPUnit_Framework_TestCase
 {
-    public function testDispatchEvent()
+    public function testEventListener()
     {
         $dispatcher = new EventDispatcher();
 
-        $dispatcher->addSubscriber(new FooSubscriber());
+        $dispatcher->addListener('fooEvent', new FooListener());
+
+        $this->expectOutputString('hello world');
+        $dispatcher->dispatch('fooEvent');
+
+        $this->assertTrue(true);
+    }
+
+    public function testEventSubscriber()
+    {
+        $dispatcher = new EventDispatcher();
+
+        $dispatcher->addSubscriber(new FooListener());
+
+        $this->expectOutputString('hello world');
+        $dispatcher->dispatch('fooEvent');
+
+        $this->assertTrue(true);
+    }
+
+    public function testClosureListener()
+    {
+        $dispatcher = new EventDispatcher();
+
+        $dispatcher->addListener('fooEvent', function () {
+            return new FooListener();
+        });
 
         $this->expectOutputString('hello world');
         $dispatcher->dispatch('fooEvent');
@@ -37,7 +63,7 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
     }
 }
 
-class FooSubscriber implements EventSubscriberInterface
+class FooListener implements EventSubscriberInterface
 {
     public function onFooEvent()
     {

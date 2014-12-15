@@ -16,19 +16,38 @@ namespace Mendo\Mediator;
  */
 class EventDispatcher implements EventDispatcherInterface
 {
-    private $subscribers = [];
+    private $listeners = [];
 
     /**
      * {@inheritdoc}
      */
     public function addSubscriber(EventSubscriberInterface $subscriber)
     {
-        foreach ($subscriber->getSubscribedEvents() as $event) {
+        $this->addListener($subscriber->getSubscribedEvents(), $subscriber);
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addListener($events, $listener)
+    {
+        if (!is_array($events)) {
+            $events = [$events];
+        }
+
+        if (!is_object($listener)) {
+            throw new \InvalidArgumentException('$listener must be an object or closure');
+        }
+
+        foreach ($events as $event) {
             $event = (string) $event;
             if ($event === '') {
                 throw new \InvalidArgumentException('$event cannot be empty');
             }
-            $this->subscribers[$event][] = $subscriber;
+
+            $this->listeners[$event][] = $listener;
         }
 
         return $this;
@@ -43,12 +62,29 @@ class EventDispatcher implements EventDispatcherInterface
         if ($event === '') {
             throw new \InvalidArgumentException('$event cannot be empty');
         }
-        if (!isset($this->subscribers[$event])) {
+
+        if (!isset($this->listeners[$event])) {
             return;
         }
-        $method = 'on'.ucfirst($event);
-        foreach ($this->subscribers[$event] as $subscriber) {
-            $subscriber->$method();
+
+        $method = $this->getEventMethodName($event);
+
+        foreach ($this->listeners[$event] as &$listener) {
+            if ($listener instanceof \Closure) {
+                $listener = $listener();
+            }
+
+            if (!method_exists($listener, $method)) {
+                throw new \RuntimeException(
+                    'Method '.$method.' doesn\'t exist in the listener class '.get_class($listener));
+            }
+
+            $listener->$method();
         }
+    }
+
+    private function getEventMethodName($event)
+    {
+        return 'on'.ucfirst($event);
     }
 }

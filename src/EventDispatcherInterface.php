@@ -28,6 +28,16 @@ interface EventDispatcherInterface
     public function addSubscriber(EventSubscriberInterface $subscriber);
 
     /**
+     * @param string|array $events
+     * @param mixed        $listener
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return EventDispatcherInterface
+     */
+    public function addListener($events, $listener);
+
+    /**
      * @param string $event
      *
      * @throws \InvalidArgumentException
