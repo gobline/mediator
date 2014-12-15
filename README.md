@@ -27,6 +27,9 @@ class FooSubscriber implements EventSubscriberInterface
         return ['fooEvent'];
     }
 }
+
+$subscriber = new FooSubscriber();
+$dispatcher->addSubscriber($subscriber);
 ```
 
 ### Adding Event Listeners
