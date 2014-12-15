@@ -27,6 +27,7 @@ class FooSubscriber implements EventSubscriberInterface
         return ['fooEvent'];
     }
 }
+```
 
 ### Adding Event Listeners
 
