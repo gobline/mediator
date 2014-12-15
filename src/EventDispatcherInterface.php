@@ -22,6 +22,8 @@ interface EventDispatcherInterface
      * @param EventSubscriberInterface $subscriber
      *
      * @throws \InvalidArgumentException
+     *
+     * @return EventDispatcherInterface
      */
     public function addSubscriber(EventSubscriberInterface $subscriber);
 

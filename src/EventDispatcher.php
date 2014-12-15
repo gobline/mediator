@@ -30,6 +30,8 @@ class EventDispatcher implements EventDispatcherInterface
             }
             $this->subscribers[$event][] = $subscriber;
         }
+
+        return $this;
     }
 
     /**
