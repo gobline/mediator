@@ -1,11 +1,11 @@
-# Mediator Component - Mendo Framework
+# Mediator component
 
-The Mendo Mediator component allows your application components to communicate with each other by dispatching events and listening to them. It implements the mediator behavioral design pattern.
+The Mediator component allows your application components to communicate with each other by dispatching events and listening to them. It implements the mediator behavioral design pattern.
 
 ### Creating the Dispatcher
 
 ```php
-use Mendo\Mediator\EventDispatcher;
+use Gobline\Mediator\EventDispatcher;
 
 $dispatcher = new EventDispatcher();
 ```
@@ -13,7 +13,7 @@ $dispatcher = new EventDispatcher();
 ### Adding Event Subscribers
 
 ```php
-use Mendo\Mediator\EventSubscriberInterface;
+use Gobline\Mediator\EventSubscriberInterface;
 
 class FooSubscriber implements EventSubscriberInterface
 {
@@ -85,9 +85,9 @@ class FooListener
 
 ## Installation
 
-You can install Mendo Mediator using the dependency management tool [Composer](https://getcomposer.org/).
+You can install the Mediator component using the dependency management tool [Composer](https://getcomposer.org/).
 Run the *require* command to resolve and download the dependencies:
 
 ```
-composer require mendoframework/mediator
+composer require gobline/mediator
 ```
