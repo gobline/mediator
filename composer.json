@@ -1,6 +1,6 @@
 {
-    "name": "mendoframework/mediator",
-    "description": "Mendo Mediator Component",
+    "name": "gobline/mediator",
+    "description": "Mediator component",
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -9,13 +9,13 @@
         }
     ],
     "keywords": [
-        "mf", "mendoframework", "mendo framework",
+        "gobline", 
         "mediator", "event dispatcher"
     ],
-    "homepage": "https://github.com/mendoframework",
+    "homepage": "https://github.com/gobline",
     "autoload": {
         "psr-4": {
-            "Mendo\\Mediator\\": "src/"
+            "Gobline\\Mediator\\": "src/"
         }
     },
     "require": {

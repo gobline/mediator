@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Mendo Framework
+ * Gobline Framework
  *
  * (c) Mathieu Decaffmeyer <mdecaffmeyer@gmail.com>
  *
@@ -9,8 +9,8 @@
  * file that was distributed with this source code.
  */
 
-use Mendo\Mediator\EventDispatcher;
-use Mendo\Mediator\EventSubscriberInterface;
+use Gobline\Mediator\EventDispatcher;
+use Gobline\Mediator\EventSubscriberInterface;
 
 /**
  * @author Mathieu Decaffmeyer <mdecaffmeyer@gmail.com>
