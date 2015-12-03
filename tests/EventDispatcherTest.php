@@ -24,7 +24,7 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher->addListener(
             new FooListener(),
             [
-                'fooEvent' => 'onFooEvent'
+                'fooEvent' => 'onFooEvent',
             ]);
 
         $this->expectOutputString('hello world');
@@ -48,7 +48,7 @@ class EventDispatcherTest extends PHPUnit_Framework_TestCase
         $dispatcher->addListener(
             function () { return new FooListener(); },
             [
-                'fooEvent' => 'onFooEvent'
+                'fooEvent' => 'onFooEvent',
             ]);
 
         $this->expectOutputString('hello world');
